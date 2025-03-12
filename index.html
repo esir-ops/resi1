@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newton-Raphson Solver 🎀</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Eczar:wght@500&family=Echowide&display=swap');
+
+        body {
+            font-family: 'Echowide', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #fce4ec; /* Soft Blush Pink */
+            text-align: center;
+        }
+
+        .container {
+            max-width: 650px;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            border: 3px solid #ffccd5;
+        }
+
+        .ribbon {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: #e25b9f;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .answer-box {
+            border: 3px solid #b5838d;
+            padding: 18px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 22px;
+            color: #d63384;
+            margin-top: 22px;
+            background: #fde2e4;
+            border-radius: 10px;
+        }
+
+        table thead {
+            background-color: #b5838d;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        tbody tr:nth-child(odd) {
+            background-color: #ffe5ec;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #fcd5ce;
+        }
+
+        .btn-primary {
+            background-color: #ea4a70 !important;
+            border-color: #de7ea8 !important;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border-radius: 25px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn-primary:hover {
+            background-color: #b5838d !important;
+            border-color: #d63384 !important;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="ribbon">🎀 Newton-Raphson Solver 🎀</div>
+
+        <form method="POST" class="mb-4 mt-4">
+            <div class="mb-3">
+                <label for="function" class="form-label">Function (in terms of x):</label>
+                <input type="text" id="function" name="function" class="form-control" placeholder="e.g., 3x^3-15x^2-20x+50" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="initial_guess" class="form-label">Initial Value (x₀):</label>
+                <input type="number" id="initial_guess" name="initial_guess" class="form-control" step="any" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="rel_error" class="form-label">Approximate Relative Error (εₐ%) < __:</label>
+                <input type="number" id="rel_error" name="rel_error" class="form-control" step="any" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100"> Solve </button>
+        </form>
+
+        {% if root is not none %}
+            <!-- 🎀 Given Section (Styled & Formatted) 🎀 -->
+            <div class="card border-dark mb-4">
+                <div class="card-header text-white fw-bold text-center" style="background-color: #e25b9f;">
+                    📌 Given Parameters & Derived Function
+                </div>
+                <div class="card-body text-dark">
+                    <div class="row">
+                        <!-- Left Half: Given Parameters -->
+                        <div class="col-md-6 border-end">
+                            <h5 class="text-center fw-bold text-danger">📌 Given</h5>
+                            <p class="mb-2"><strong>f(x):</strong> <span class="text-primary" style="font-style: italic; font-size: 1.2rem;">{{ function }}</span></p>
+                            <p class="mb-2"><strong>x₀:</strong> <span class="text-primary">{{ initial_guess }}</span></p>
+                            <p class="mb-0"><strong>εₐ% &lt;</strong> <span class="text-primary">{{ rel_error }}</span></p>
+                        </div>
+
+                        <!-- Right Half: Derived Function f'(x) -->
+                        <div class="col-md-6">
+                            <h5 class="text-center fw-bold text-danger">📌 Derived f'(x)</h5>
+                            <p class="mb-0"><strong>f'(x):</strong> <span class="text-primary" style="font-style: italic; font-size: 1.2rem;">{{ derivative }}</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="mt-4">Solution:</h3>
+            <div class="table-responsive">
+                <table class="table table-bordered text-center">
+                    <thead>
+                        <tr>
+                            <th>Iteration (n)</th>
+                            <th>xₙ</th>
+                            <th>f(xₙ)</th>
+                            <th>f'(xₙ)</th>
+                            <th>εₐ (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in range(iterations|length) %}
+                        <tr>
+                            <td>{{ iterations[i][0] }}</td>
+                            <td>{{ iterations[i][1] }}</td>
+                            <td>{{ iterations[i][2] }}</td>
+                            <td>{{ iterations[i][3] }}</td>
+                            <td>{{ iterations[i][4] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="answer-box">
+                💖 Answer: x = {{ root }} with εₐ = {{ iterations[-1][4] }} 💖
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
